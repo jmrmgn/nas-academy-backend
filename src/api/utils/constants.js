@@ -1,6 +1,7 @@
 // Http Status
 const CREATED = 201;
 const NO_CONTENT = 204;
+const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
 const UNPROCESSABLE_ENTITY = 422;
 const SERVER_ERROR = 500;
@@ -15,6 +16,7 @@ module.exports = {
   httpStatus: {
     CREATED,
     NO_CONTENT,
+    BAD_REQUEST,
     NOT_FOUND,
     UNPROCESSABLE_ENTITY,
     SERVER_ERROR,
