@@ -1,0 +1,7 @@
+const CREATED = 201;
+const UNPROCESSABLE_ENTITY = 422;
+const SERVER_ERROR = 500;
+
+module.exports = {
+  httpStatus: { CREATED, UNPROCESSABLE_ENTITY, SERVER_ERROR },
+};
