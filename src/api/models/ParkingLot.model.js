@@ -29,6 +29,13 @@ class ParkingLot {
     console.log('==> parkingLot', this.parkingLot);
     return newEntry;
   }
+
+  getAvailableSlots() {
+    const parkingLotLength = this.count();
+    const currentParkingLotSize = PARKING_LOT_SIZE - parkingLotLength;
+
+    return currentParkingLotSize;
+  }
 }
 
 module.exports = new ParkingLot();

@@ -2,19 +2,30 @@ const { ParkingLot } = require('../models');
 const { httpStatus } = require('../utils/constants');
 const APIError = require('../utils/APIError');
 
+/**
+ * Park a Car
+ *
+ * Park a car and returns the slot number where it is parked
+ * @public
+ */
 exports.park = (req, res, next) => {
   try {
-    throw new APIError({
-      status: httpStatus.UNPROCESSABLE_ENTITY,
-      message: 'Parking Lot is full',
-    });
-    // const { carNumber, slotNumber } = req.body;
+    const { carNumber, slotNumber } = req.body;
+    const parkEntry = { carNumber, slotNumber };
 
-    // const parkEntry = { carNumber, slotNumber };
+    // Check if Parking lot is full
+    const isParkingLotFull = ParkingLot.getAvailableSlots() === 0;
+    if (isParkingLotFull) {
+      throw new APIError({
+        status: httpStatus.UNPROCESSABLE_ENTITY,
+        message: 'Parking Lot is full',
+      });
+    }
 
-    // const createdEntry = ParkingLot.insert(parkEntry);
+    // Park car if Parking is not full
+    const createdEntry = ParkingLot.insert(parkEntry);
 
-    // res.status(201).json(createdEntry);
+    res.status(httpStatus.CREATED).json(createdEntry);
   } catch (error) {
     next(error);
   }
