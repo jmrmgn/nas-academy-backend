@@ -1,5 +1,5 @@
 const { ParkingLot } = require('../models');
-const { httpStatus } = require('../utils/constants');
+const { httpStatus, numberType } = require('../utils/constants');
 const APIError = require('../utils/APIError');
 
 /**
@@ -52,6 +52,34 @@ exports.unpark = (req, res, next) => {
     ParkingLot.remove(carNumber);
 
     res.status(httpStatus.NO_CONTENT).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get the Car/Slot Information
+ *
+ * Return the car number and slot number based on given number
+ */
+exports.getInformation = (req, res, next) => {
+  try {
+    // Default numberType is car-number
+    const { number, type = 'car-number' } = req.params;
+
+    // Get number type
+    const selectedNumberType = numberType[type];
+
+    const result = ParkingLot.findByType(number, selectedNumberType);
+
+    if (!result) {
+      throw new APIError({
+        status: httpStatus.NOT_FOUND,
+        message: 'Not Found',
+      });
+    }
+
+    res.json(result);
   } catch (error) {
     next(error);
   }

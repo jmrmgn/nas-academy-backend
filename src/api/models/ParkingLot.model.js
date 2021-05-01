@@ -57,6 +57,18 @@ class ParkingLot {
 
     return currentParkingLotSize;
   }
+
+  findByType(number, type) {
+    let result = this.parkingLot;
+
+    if (number) {
+      result = this.parkingLot.find(
+        (entry) => String(entry[type]) === String(number)
+      );
+    }
+
+    return result;
+  }
 }
 
 module.exports = new ParkingLot();

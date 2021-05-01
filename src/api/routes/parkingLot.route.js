@@ -17,6 +17,19 @@ router
   .post(ParkingLotController.park);
 
 router
+  .route('/park/:number/:type?')
+  /**
+   * @endpoint    {GET} /parking-lot/park/:number/:type Get Car/Slot Information
+   * @description Return the car number and slot number based on given number
+   *
+   * @apiParam  {String}  number  - Car/Slot Number
+   * @apiParam  {String}  type    - Number Type
+   *
+   * @success   {Object}  Parking Lot Slot entry
+   */
+  .get(ParkingLotController.getInformation);
+
+router
   .route('/unpark/:carNumber')
   /**
    * @endpoint    {DELETE} /parking-lot/unpark Unpark the car
