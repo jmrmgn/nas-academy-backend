@@ -6,7 +6,6 @@ const APIError = require('../utils/APIError');
  * Park a Car
  *
  * Park a car and returns the slot number where it is parked
- * @public
  */
 exports.park = (req, res, next) => {
   try {
@@ -26,6 +25,33 @@ exports.park = (req, res, next) => {
     const createdEntry = ParkingLot.insert(parkEntry);
 
     res.status(httpStatus.CREATED).json(createdEntry);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Unpark the Car
+ *
+ */
+exports.unpark = (req, res, next) => {
+  try {
+    const { carNumber } = req.params;
+
+    // Check if the car is parked
+    const isCarParked = ParkingLot.find(carNumber);
+
+    if (!isCarParked) {
+      throw new APIError({
+        status: httpStatus.NOT_FOUND,
+        message: 'Car not found',
+      });
+    }
+
+    // Remove car in the slot
+    ParkingLot.remove(carNumber);
+
+    res.status(httpStatus.NO_CONTENT).end();
   } catch (error) {
     next(error);
   }

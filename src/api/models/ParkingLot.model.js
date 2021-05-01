@@ -22,6 +22,27 @@ class ParkingLot {
     return parkingLotLength;
   }
 
+  find(carNumber) {
+    let result = this.parkingLot;
+
+    if (carNumber) {
+      result = this.parkingLot.find((entry) => entry.carNumber === carNumber);
+    }
+
+    return result;
+  }
+
+  remove(carNumber) {
+    if (carNumber) {
+      const updatedLots = this.parkingLot.filter(
+        (entry) => entry.carNumber !== carNumber
+      );
+
+      this.parkingLot = updatedLots;
+      return;
+    }
+  }
+
   insert({ carNumber, slotNumber }) {
     const newEntry = { carNumber, slotNumber, timeParked: new Date() };
     this.parkingLot.push(newEntry);
