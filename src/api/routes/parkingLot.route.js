@@ -6,38 +6,38 @@ const ParkingLotController = require('../controllers/parkingLot.controller');
 router
   .route('/park')
   /**
-   * @endpoint    {POST} /parking-lot/park Park a Car
-   * @description Park a car and returns the slot number where it is parked
+   * @api    {POST} /parking-lot/park Park a Car
+   * @apiDescription Park a car and returns the slot number where it is parked
    *
-   * @apiBody  {String}  Car number
-   * @apiBody  {Number}  Slot number
+   * @apiBody  {String}  carNumber  - Car number
+   * @apiBody  {Number}  slotNumber - Slot number
    *
-   * @success   {Object}  Parking Lot Slot entry
+   * @apiSuccess   {Object}  Parking Lot Slot entry
    */
   .post(ParkingLotController.park);
 
 router
   .route('/park/:number/:type?')
   /**
-   * @endpoint    {GET} /parking-lot/park/:number/:type Get Car/Slot Information
-   * @description Return the car number and slot number based on given number
+   * @api    {GET} /parking-lot/park/:number/:type Get Car/Slot Information
+   * @apiDescription Return the car number and slot number based on given number
    *
    * @apiParam  {String}  number  - Car/Slot Number
    * @apiParam  {String}  type    - Number Type
    *
-   * @success   {Object}  Parking Lot Slot entry
+   * @apiSuccess   {Object}  Parking Lot Slot entry
    */
   .get(ParkingLotController.getInformation);
 
 router
   .route('/unpark/:carNumber')
   /**
-   * @endpoint    {DELETE} /parking-lot/unpark Unpark the car
-   * @description Unpark the car and free the slot
+   * @api    {DELETE} /parking-lot/unpark Unpark the car
+   * @apiDescription Unpark the car and free the slot
    *
-   * @apiParam  {String}  Car number
+   * @apiParam  {String}  carNumber - Car number
    *
-   * @success   {204 No Content}
+   * @apiSuccess   {204 No Content}
    */
   .delete(ParkingLotController.unpark);
 
