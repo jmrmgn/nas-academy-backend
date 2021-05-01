@@ -3,6 +3,10 @@ const router = require('express').Router();
 // Controllers
 const ParkingLotController = require('../controllers/parkingLot.controller');
 
+// Validations
+const validate = require('../utils/validate');
+const { park } = require('../validations/parkingLot.validation');
+
 router
   .route('/park')
   /**
@@ -14,7 +18,7 @@ router
    *
    * @apiSuccess   {Object}  Parking Lot Slot entry
    */
-  .post(ParkingLotController.park);
+  .post(validate(park), ParkingLotController.park);
 
 router
   .route('/park/:number/:type?')
