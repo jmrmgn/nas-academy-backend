@@ -21,6 +21,15 @@ exports.park = (req, res, next) => {
       });
     }
 
+    // Check if the Car is already parked
+    const isCarAlreadyParked = ParkingLot.find(carNumber);
+    if (isCarAlreadyParked) {
+      throw new APIError({
+        status: httpStatus.UNPROCESSABLE_ENTITY,
+        message: 'Car is already parked',
+      });
+    }
+
     // Park car if Parking is not full
     const createdEntry = ParkingLot.insert(parkEntry);
 
