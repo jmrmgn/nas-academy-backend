@@ -18,8 +18,7 @@ const errorHandler = (err, req, res, next) => {
     delete response.stack;
   }
 
-  console.log('====> errrr', err);
-  res.status(err.status ?? httpStatus.SERVER_ERROR).json(response);
+  return res.status(err.status ?? httpStatus.SERVER_ERROR).json(response);
 };
 
 module.exports = { errorHandler };

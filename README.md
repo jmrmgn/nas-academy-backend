@@ -2,8 +2,6 @@
 
 A simple API that manages a parking lot that is rate-limited by the IP Address.
 
-
-
 ## Config File (.env)
 
 ```
@@ -23,8 +21,6 @@ REQUEST_LIMIT=10
 REQUEST_TIME_FRAME=10
 ```
 
-
-
 ## Quick Start
 
 ```
@@ -35,8 +31,6 @@ npm start
 ```
 
 Your app should now be running on [localhost:3000](http://localhost:5000/).
-
-
 
 ## Endpoints
 
@@ -54,8 +48,8 @@ POST /api/park
 
 ```json
 {
-   "carNumber": "ABC-123",
-   "slotNumber": 1,
+  "carNumber": "ABC-123",
+  "slotNumber": "SLOT-1"
 }
 ```
 
@@ -66,7 +60,7 @@ Status: 201 Created
 
 {
     "carNumber": "ABC-123",
-    "slotNumber": 1,
+    "slotNumber": "SLOT-1",
     "timeParked": "2021-05-02T07:40:50.790Z"
 }
 ```
@@ -95,10 +89,10 @@ Status: 400 Bad Request
             "carNumber must be string"
         ],
         "slotNumber": [
-            "slotNumber is required"
+            "slotNumber is required",
+            "slotNumber  must be string"
         ]
     },
-    ...
 }
 ```
 
@@ -127,8 +121,6 @@ Status: 422 Bad Request
     "message": "Slot number is already occupied",
 }
 ```
-
-
 
 ### [DELETE] Unpark the Car
 
@@ -165,8 +157,6 @@ Status: 404 Bad Request
 }
 ```
 
-
-
 ### [GET] Get the Car/Slot Information
 
 Take either the slot or car number and return both information.
@@ -179,7 +169,7 @@ GET /api/park/:number/:type
 
 | Key    | Value                         | Description                                   |
 | ------ | ----------------------------- | --------------------------------------------- |
-| number | `1` or `ABC-123`              | Car number or Slot Number                     |
+| number | `SLOT-1` or `ABC-123`         | Car number or Slot Number                     |
 | type   | `car-number` or `slot-number` | Type of input number. Default is `car-number` |
 
 **Response**
@@ -189,7 +179,7 @@ Status: 200 No Content
 
 {
     "carNumber": "ABC-123",
-    "slotNumber": 1,
+    "slotNumber": "SLOT-1",
     "timeParked": "2021-05-02T07:40:50.790Z"
 }
 ```
