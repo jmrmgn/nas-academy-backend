@@ -101,7 +101,7 @@ Status: 400 Bad Request
 **Response**
 
 ```json
-Status: 400 Bad Request
+Status: 422 Unprocessable Entity
 
 {
 	"code": 422,
@@ -109,12 +109,12 @@ Status: 400 Bad Request
 }
 ```
 
-**If slot is already occupied**
+**If the slot is already occupied**
 
 **Response**
 
 ```json
-Status: 422 Bad Request
+Status: 422 Unprocessable Entity
 
 {
 	"code": 422,
@@ -128,7 +128,7 @@ Status: 422 Bad Request
 
 ### [DELETE] Unpark the Car
 
-Takes the slot number from which the car is to be removed from and frees that slot up to be used by other cars.
+Takes the slot number from which car is to be removed  and frees that slot to be used by the incoming cars.
 
 ```
 DELETE /api/unpark/:carNumber
@@ -150,10 +150,10 @@ Status: 204 No Content
 
 **Validations**
 
-**When park is not parked**
+**When a car is not parked**
 
 ```json
-Status: 404 Bad Request
+Status: 404 Not Found
 
 {
 	"code": 404,
@@ -167,7 +167,7 @@ Status: 404 Bad Request
 
 ### [GET] Get the Car/Slot Information
 
-Take either the slot or car number and return both information.
+Takes either the slot or car number and return both information.
 
 ```
 GET /api/park/:number/:type
@@ -194,14 +194,14 @@ Status: 200 OK
 
 **Validations**
 
-**When car or slot number not found**
+**When car or slot number is not found**
 
 ```json
-Status: 404 Bad Request
+Status: 404 Not Found
 
 {
 	"code": 404,
-    "message": "Not found",
+    "message": "Car/Slot number is not found",
 }
 ```
 
