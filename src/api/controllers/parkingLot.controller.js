@@ -12,15 +12,6 @@ exports.park = (req, res, next) => {
     const { carNumber, slotNumber } = req.body;
     const parkEntry = { carNumber, slotNumber };
 
-    // Check if Parking lot is full
-    const isParkingLotFull = ParkingLot.getAvailableSlots() === 0;
-    if (isParkingLotFull) {
-      throw new APIError({
-        status: httpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Parking Lot is full',
-      });
-    }
-
     // Check if the Car is already parked
     const isCarAlreadyParked = ParkingLot.find(carNumber);
     if (isCarAlreadyParked) {
@@ -39,6 +30,15 @@ exports.park = (req, res, next) => {
       throw new APIError({
         status: httpStatus.UNPROCESSABLE_ENTITY,
         message: 'Slot number is already occupied',
+      });
+    }
+
+    // Check if Parking lot is full
+    const isParkingLotFull = ParkingLot.getAvailableSlots() === 0;
+    if (isParkingLotFull) {
+      throw new APIError({
+        status: httpStatus.UNPROCESSABLE_ENTITY,
+        message: 'Parking Lot is full',
       });
     }
 
