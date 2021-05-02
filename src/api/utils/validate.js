@@ -16,6 +16,10 @@ const checkInput = (fieldName, requirements, value) => {
     errors.push(`${fieldName} is required`);
   }
 
+  if (requirements?.isString && typeof value !== 'string') {
+    errors.push(`${fieldName} must be string`);
+  }
+
   if (errors.length > 0) {
     return { [fieldName]: errors };
   }
