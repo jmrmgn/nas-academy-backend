@@ -1,0 +1,87 @@
+const {
+  RESET_SECONDS,
+  REQUEST_LIMIT,
+  REQUEST_TIME_FRAME,
+} = require('../../config/vars');
+const isEmpty = require('../utils/isEmpty');
+const { addSeconds } = require('../helpers/time');
+const { httpStatus } = require('../utils/constants');
+const APIError = require('../utils/APIError');
+
+// Storage of all IP Address
+const store = {};
+
+/**
+ *
+ * @param {req} req - Request from express
+ */
+const getIpAddress = (req) => {
+  return String(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
+};
+
+const rateLimiter = (req, res, next) => {
+  const ipAddress = getIpAddress(req);
+  const currentTimestamp = Date.now();
+
+  // If ip address exist, then create one
+  if (!store[ipAddress]) {
+    store[ipAddress] = {
+      count: 1,
+      requestTimestamp: currentTimestamp,
+      limitRequestAt: addSeconds(currentTimestamp, REQUEST_TIME_FRAME),
+    };
+    next();
+  }
+
+  const { requestTimestamp, count, requestAgainAfter, limitRequestAt } =
+    store[ipAddress] ?? {};
+
+  const isRestricted =
+    requestAgainAfter && requestAgainAfter >= currentTimestamp;
+  const isCountExceed = count > REQUEST_LIMIT;
+
+  // If restriced due to many requests
+  if (isRestricted) {
+    store[ipAddress].count = 1;
+    throw new APIError({
+      status: httpStatus.TOO_MANY_REQUESTS,
+      message: `Too many requests from this IP, please try again after ${new Date(
+        requestAgainAfter
+      ).toString()}`,
+    });
+  }
+
+  // If count exceed
+  if (isCountExceed) {
+    const requestAgainValue = addSeconds(currentTimestamp, RESET_SECONDS);
+    store[ipAddress].requestAgainAfter = requestAgainValue;
+
+    throw new APIError({
+      status: httpStatus.TOO_MANY_REQUESTS,
+      message: `This IP is restricted from requests. try again after ${new Date(
+        requestAgainValue
+      ).toString()}`,
+    });
+  }
+
+  // Will reset the ipAddress entry if over limitRequestAt
+  if (currentTimestamp > limitRequestAt) {
+    store[ipAddress].count = 1;
+    store[ipAddress].requestTimestamp = currentTimestamp;
+    store[ipAddress].limitRequestAt = addSeconds(
+      currentTimestamp,
+      REQUEST_TIME_FRAME
+    );
+    if (store[ipAddress].requestAgainAfter) {
+      delete store[ipAddress].requestAgainAfter;
+    }
+    next();
+  }
+
+  // console.log('==> STORE', store);
+
+  store[ipAddress].count += 1;
+  next();
+};
+
+module.exports = rateLimiter;

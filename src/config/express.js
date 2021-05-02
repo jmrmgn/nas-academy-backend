@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 
+// Middlewares
 const { errorHandler } = require('../api/middlewares/error');
-const rateLimiter = require('../api/utils/rateLimiter');
+const rateLimiter = require('../api/middlewares/rateLimiter');
 
 // Parsing JSON
 app.use(express.json());
