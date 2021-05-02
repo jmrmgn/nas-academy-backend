@@ -12,7 +12,7 @@ app.use(express.json());
 const routes = require('../api/routes');
 
 // Mounting Routes
-app.use('/', rateLimiter, routes);
+app.use('/api', rateLimiter, routes);
 
 // API Error handler, send stacktrace only during development
 app.use(errorHandler);
