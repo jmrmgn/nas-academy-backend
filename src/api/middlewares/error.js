@@ -1,5 +1,6 @@
 const { NODE_ENV } = require('../../config/vars');
 const { httpStatus } = require('../utils/constants');
+const APIError = require('../utils/APIError');
 
 /**
  * Error Handler
@@ -21,4 +22,16 @@ const errorHandler = (err, req, res, next) => {
   return res.status(err.status ?? httpStatus.SERVER_ERROR).json(response);
 };
 
-module.exports = { errorHandler };
+/**
+ * Catch 404 and forward to error handler
+ *
+ */
+const notFoundHandler = (req, res, next) => {
+  const err = new APIError({
+    message: 'Not found',
+    status: httpStatus.NOT_FOUND,
+  });
+  return errorHandler(err, req, res);
+};
+
+module.exports = { errorHandler, notFoundHandler };
