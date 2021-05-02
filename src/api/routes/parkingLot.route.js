@@ -5,7 +5,11 @@ const ParkingLotController = require('../controllers/parkingLot.controller');
 
 // Validations
 const validate = require('../utils/validate');
-const { park, unpark } = require('../validations/parkingLot.validation');
+const {
+  park,
+  unpark,
+  getInformation,
+} = require('../validations/parkingLot.validation');
 
 router
   .route('/park')
@@ -31,7 +35,7 @@ router
    *
    * @apiSuccess   {Object}  Parking Lot Slot entry
    */
-  .get(ParkingLotController.getInformation);
+  .get(validate(getInformation), ParkingLotController.getInformation);
 
 router
   .route('/unpark/:carNumber')

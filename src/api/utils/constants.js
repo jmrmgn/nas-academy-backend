@@ -26,5 +26,7 @@ module.exports = {
   numberType: {
     [CAR_LABEL]: CAR_VALUE,
     [SLOT_LABEL]: SLOT_VALUE,
+    CAR_LABEL,
+    SLOT_LABEL,
   },
 };
