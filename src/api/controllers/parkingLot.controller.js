@@ -86,7 +86,7 @@ exports.unpark = (req, res, next) => {
 exports.getInformation = (req, res, next) => {
   try {
     // Default numberType is car-number
-    const { number, type = 'car-number' } = req.params;
+    const { number, type = numberType.CAR_LABEL } = req.params;
 
     // Get number type
     const selectedNumberType = numberType[type];
@@ -96,11 +96,26 @@ exports.getInformation = (req, res, next) => {
     if (!result) {
       throw new APIError({
         status: httpStatus.NOT_FOUND,
-        message: 'Not Found',
+        message: 'Car/Slot number is not found',
       });
     }
 
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get Available Slots
+ *
+ * Return the number of available slots in parking lot
+ */
+exports.getAvailableSlots = (req, res, next) => {
+  try {
+    const result = ParkingLot.getAvailableSlots();
+
+    res.json({ totalSlots: result });
   } catch (error) {
     next(error);
   }

@@ -12,6 +12,16 @@ const {
 } = require('../validations/parkingLot.validation');
 
 router
+  .route('/')
+  /**
+   * @api    {GET} /parking-lot Get all slots
+   * @apiDescription Get all available slots in parking lot
+   *
+   * @apiSuccess   {Number}  Total available slots
+   */
+  .get(ParkingLotController.getAvailableSlots);
+
+router
   .route('/park')
   /**
    * @api    {POST} /parking-lot/park Park a Car
