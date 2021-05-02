@@ -35,7 +35,6 @@ const rateLimiter = (req, res, next) => {
         count: 1,
         requestTimestamp: currentTimestamp,
         registered: new Date(currentTimestamp).toString(),
-        limitRequestAt: addSeconds(currentTimestamp, REQUEST_TIME_FRAME),
       };
       next();
     } else {
@@ -60,10 +59,14 @@ const rateLimiter = (req, res, next) => {
         const requestAgainValue = addSeconds(currentTimestamp, RESET_SECONDS);
         store[ipAddress].count = 1;
         store[ipAddress].requestAgainAfter = requestAgainValue;
+        store[ipAddress].limitRequestAt = addSeconds(
+          currentTimestamp,
+          REQUEST_TIME_FRAME
+        );
 
         throw new APIError({
           status: httpStatus.TOO_MANY_REQUESTS,
-          message: `This IP is restricted from requests. try again after ${new Date(
+          message: `This IP is restricted from sending requests. try again after ${new Date(
             requestAgainValue
           ).toString()}`,
         });
