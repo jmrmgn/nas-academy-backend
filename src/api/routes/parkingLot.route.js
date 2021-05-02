@@ -5,7 +5,7 @@ const ParkingLotController = require('../controllers/parkingLot.controller');
 
 // Validations
 const validate = require('../utils/validate');
-const { park } = require('../validations/parkingLot.validation');
+const { park, unpark } = require('../validations/parkingLot.validation');
 
 router
   .route('/park')
@@ -43,6 +43,6 @@ router
    *
    * @apiSuccess   {204 No Content}
    */
-  .delete(ParkingLotController.unpark);
+  .delete(validate(unpark), ParkingLotController.unpark);
 
 module.exports = router;
