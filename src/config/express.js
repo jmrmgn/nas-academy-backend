@@ -11,8 +11,10 @@ app.use(express.json());
 // All API Routes
 const routes = require('../api/routes');
 
+app.use(rateLimiter);
+
 // Mounting Routes
-app.use('/api', rateLimiter, routes);
+app.use('/api', routes);
 
 // API Error handler, send stacktrace only during development
 app.use(errorHandler);

@@ -47,7 +47,7 @@ class ParkingLot {
     const newEntry = { carNumber, slotNumber, timeParked: new Date() };
     this.parkingLot.push(newEntry);
 
-    console.log('==> parkingLot', this.parkingLot);
+    // console.log('==> parkingLot', this.parkingLot);
     return newEntry;
   }
 

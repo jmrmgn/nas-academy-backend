@@ -19,69 +19,78 @@ const getIpAddress = (req) => {
   return String(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 };
 
+/**
+ * Rate Limiter
+ *
+ * Middleware that limit requests based on the given restrictions
+ */
 const rateLimiter = (req, res, next) => {
   const ipAddress = getIpAddress(req);
   const currentTimestamp = Date.now();
 
-  // If ip address exist, then create one
-  if (!store[ipAddress]) {
-    store[ipAddress] = {
-      count: 1,
-      requestTimestamp: currentTimestamp,
-      limitRequestAt: addSeconds(currentTimestamp, REQUEST_TIME_FRAME),
-    };
-    next();
-  }
+  try {
+    // If ip address exist, then create one
+    if (!store[ipAddress]) {
+      store[ipAddress] = {
+        count: 1,
+        requestTimestamp: currentTimestamp,
+        registered: new Date(currentTimestamp).toString(),
+        limitRequestAt: addSeconds(currentTimestamp, REQUEST_TIME_FRAME),
+      };
+      next();
+    } else {
+      const { requestTimestamp, count, requestAgainAfter, limitRequestAt } =
+        store[ipAddress] ?? {};
 
-  const { requestTimestamp, count, requestAgainAfter, limitRequestAt } =
-    store[ipAddress] ?? {};
+      const isRestricted = requestAgainAfter > currentTimestamp;
+      const isCountExceed = count >= REQUEST_LIMIT;
 
-  const isRestricted =
-    requestAgainAfter && requestAgainAfter >= currentTimestamp;
-  const isCountExceed = count > REQUEST_LIMIT;
+      // If restriced due to many requests
+      if (isRestricted) {
+        throw new APIError({
+          status: httpStatus.TOO_MANY_REQUESTS,
+          message: `Too many requests from this IP, please try again after ${new Date(
+            requestAgainAfter
+          ).toString()}`,
+        });
+      }
 
-  // If restriced due to many requests
-  if (isRestricted) {
-    store[ipAddress].count = 1;
-    throw new APIError({
-      status: httpStatus.TOO_MANY_REQUESTS,
-      message: `Too many requests from this IP, please try again after ${new Date(
-        requestAgainAfter
-      ).toString()}`,
-    });
-  }
+      // If count exceed
+      if (isCountExceed) {
+        const requestAgainValue = addSeconds(currentTimestamp, RESET_SECONDS);
+        store[ipAddress].count = 1;
+        store[ipAddress].requestAgainAfter = requestAgainValue;
 
-  // If count exceed
-  if (isCountExceed) {
-    const requestAgainValue = addSeconds(currentTimestamp, RESET_SECONDS);
-    store[ipAddress].requestAgainAfter = requestAgainValue;
+        throw new APIError({
+          status: httpStatus.TOO_MANY_REQUESTS,
+          message: `This IP is restricted from requests. try again after ${new Date(
+            requestAgainValue
+          ).toString()}`,
+        });
+      }
 
-    throw new APIError({
-      status: httpStatus.TOO_MANY_REQUESTS,
-      message: `This IP is restricted from requests. try again after ${new Date(
-        requestAgainValue
-      ).toString()}`,
-    });
-  }
+      // Will reset the ipAddress entry if over limitRequestAt
+      if (currentTimestamp > limitRequestAt) {
+        store[ipAddress].count = 1;
+        store[ipAddress].requestTimestamp = currentTimestamp;
+        store[ipAddress].limitRequestAt = addSeconds(
+          currentTimestamp,
+          REQUEST_TIME_FRAME
+        );
+        if (store[ipAddress].requestAgainAfter) {
+          delete store[ipAddress].requestAgainAfter;
+        }
+      } else {
+        store[ipAddress].count += 1;
+      }
 
-  // Will reset the ipAddress entry if over limitRequestAt
-  if (currentTimestamp > limitRequestAt) {
-    store[ipAddress].count = 1;
-    store[ipAddress].requestTimestamp = currentTimestamp;
-    store[ipAddress].limitRequestAt = addSeconds(
-      currentTimestamp,
-      REQUEST_TIME_FRAME
-    );
-    if (store[ipAddress].requestAgainAfter) {
-      delete store[ipAddress].requestAgainAfter;
+      next();
     }
-    next();
+
+    // console.log('==> STORE', store);
+  } catch (error) {
+    next(error);
   }
-
-  // console.log('==> STORE', store);
-
-  store[ipAddress].count += 1;
-  next();
 };
 
 module.exports = rateLimiter;
