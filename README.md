@@ -36,7 +36,7 @@ Your app should now be running on [localhost:3000](http://localhost:5000/).
 
 ### [POST] Park a Car
 
-It will be given the car number as input and outputs the slot where it is parked.
+Takes the car and slot number as input to park a car.
 
 ```
 POST /api/park
@@ -122,6 +122,10 @@ Status: 422 Bad Request
 }
 ```
 
+
+
+
+
 ### [DELETE] Unpark the Car
 
 Takes the slot number from which the car is to be removed from and frees that slot up to be used by other cars.
@@ -157,6 +161,10 @@ Status: 404 Bad Request
 }
 ```
 
+
+
+
+
 ### [GET] Get the Car/Slot Information
 
 Take either the slot or car number and return both information.
@@ -175,7 +183,7 @@ GET /api/park/:number/:type
 **Response**
 
 ```json
-Status: 200 No Content
+Status: 200 OK
 
 {
     "carNumber": "ABC-123",
@@ -194,5 +202,27 @@ Status: 404 Bad Request
 {
 	"code": 404,
     "message": "Not found",
+}
+```
+
+
+
+
+
+### [GET] Get Available Parking slots
+
+Return the total available parking slots.
+
+```
+GET /api/park
+```
+
+**Response**
+
+```json
+Status: 200 OK
+
+{
+    "totalSlots": 10
 }
 ```
