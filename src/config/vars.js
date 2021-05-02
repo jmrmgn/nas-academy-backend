@@ -1,3 +1,17 @@
-const DEFAULT_PORT = 3000;
+const MILLISECONDS = 1000; // 1 Second
 
-module.exports = { PORT: process.env.PORT || DEFAULT_PORT };
+const DEFAULT_PORT = 3000;
+const DEFAULT_PARKING_LOT_SIZE = 5; // Parking Lot size
+const DEFAULT_RESET_SECONDS = 10; // Reset restriction
+const DEFAULT_REQUEST_LIMIT = 10; // Counter Limit
+const DEFAULT_REQUEST_TIME_FRAME = 10; // Time frame of requests
+
+module.exports = {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT || DEFAULT_PORT,
+  PARKING_LOT_SIZE: process.env.PARKING_LOT_SIZE || DEFAULT_PARKING_LOT_SIZE,
+  RESET_SECONDS: process.env.RESET_SECONDS || DEFAULT_RESET_SECONDS,
+  REQUEST_LIMIT: process.env.REQUEST_LIMIT || DEFAULT_REQUEST_LIMIT,
+  REQUEST_TIME_FRAME:
+    process.env.REQUEST_TIME_FRAME || DEFAULT_REQUEST_TIME_FRAME,
+};
