@@ -30,6 +30,18 @@ exports.park = (req, res, next) => {
       });
     }
 
+    // Check if the Slot is already occupied
+    const isSlotAlreadyOccupied = ParkingLot.findByType(
+      slotNumber,
+      numberType['slot-number']
+    );
+    if (isSlotAlreadyOccupied) {
+      throw new APIError({
+        status: httpStatus.UNPROCESSABLE_ENTITY,
+        message: 'Slot number is already occupied',
+      });
+    }
+
     // Park car if Parking is not full
     const createdEntry = ParkingLot.insert(parkEntry);
 
